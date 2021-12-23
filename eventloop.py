@@ -4,15 +4,15 @@ import sys
 
 class Connection():
     def __init__(self):
-        self.s = socket.socket()
-        self.s.connect(("localhost", 1234))
+        self.sock = socket.socket()
+        self.sock.connect(("localhost", 65432))
     def fileno(self):
-        return self.s.fileno()
+        return self.sock.fileno()
     def on_read(self):
-        msg = self.s.recv(1000).decode("utf-8")
+        msg = self.sock.recv(1000).decode("utf-8")
         print(msg)
     def send(self, msg):
-        self.s.send(msg)
+        self.sock.send(msg)
 
 class Input():
     def __init__(self, sender):
@@ -24,21 +24,30 @@ class Input():
         self.sender.send(msg)
 
 class EventLoop():
-    def __init__(self, reader):
-        self.readers = []
-    def add_reader(self, reader):
-        self.readers.append(reader)
+    readers = []
+    def __init__(self):
+        pass
+
+    # The Event needs to have input destination
+    # Can be modfied during connection period using multithreading
+    def add_input(self, dest):
+        self.readers.append(dest)
+        print(f'{self.readers}')
+    
+    # The Event can be run forever by calling this command until a command for exit is called
+    # 
     def run_forever(self):
         while True:
             self.readers, _, _ = select.select(self.readers, [], [])
-            for reader in self.readers:
-                if reader is connection:
-                    reader.on_read()
+            for dest in self.readers:
+                if dest is self.readers:
+                    print(f"{dest}")
+                    dest.on_read()
 
-connection = Connection()
-in_reader = Input(connection)
 
-eventio = EventLoop()
-eventio.add_reader(connection)
-eventio.add_reader(in_reader)
-eventio.run_forever()
+if __name__ == "__main__":
+    feed = Connection()
+    in_reader = Input(feed)
+    eventio = EventLoop()
+    eventio.add_input(feed)
+    eventio.add_input(in_reader)
