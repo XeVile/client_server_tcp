@@ -1,2 +1,5 @@
-
+echoClient.py
+echoServer.py
+scrape.py
+exam/
 *.swp
