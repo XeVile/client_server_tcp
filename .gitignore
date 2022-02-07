@@ -1,5 +1,8 @@
 echoClient.py
 echoServer.py
 scrape.py
+eventloop.py
+tempCodeRunnerFile.py
 exam/
+__pycache__/
 *.swp
