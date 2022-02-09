@@ -32,7 +32,7 @@ def select_last_client(conn):
     cur = conn.cursor()
     return cur.lastrowid
 
-def select_all_clients(conn):
+def select_client(conn):
     """
     Query all rows in the clients table
     :param conn: the Connection object
@@ -42,23 +42,28 @@ def select_all_clients(conn):
     cur.execute("SELECT * FROM client")
 
     rows = cur.fetchall()
-
+    client = {}
     for row in rows:
-        print(row)
+        client[row[0]] = (row[1], row[2], row[3], row[4], row[5])
+    
+    return client
 
-def select_all_comms(conn):
+def select_comms(conn, client_id):
     """
     Query all rows in the clients table
     :param conn: the Connection object
     :return:
     """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM comms_archive")
+    sql = "SELECT * FROM comms_archive WHERE client_id = ?"
+    cur.execute(sql, client_id)
 
     rows = cur.fetchall()
-
+    comms = {}
     for row in rows:
-        print(row)
+        comms[row[0]] = (row[2], row[3], row[4])
+    
+    return comms
 
 def create_client(conn, client):
     """
@@ -165,8 +170,10 @@ def main():
     else:
         print("Error! cannot create the database connection.")
     
-    select_all_clients(conn)
-    select_all_comms(conn)
+    a =select_client(conn)
+    b = select_comms(conn, (3,))
+    print(b[2])
+    #select_all_comms(conn)
 
 if __name__ == '__main__':
     main()

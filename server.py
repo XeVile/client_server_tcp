@@ -1,7 +1,5 @@
 from datetime import datetime
-from http import client
 import socket
-from venv import create
 
 # For updating the SQL
 import db_func as db
@@ -234,6 +232,7 @@ class server:
                 print(f"Error while accepting socket: {str(msg)}")
             
             time = str(datetime.now().strftime("%H:%M:%S"))
+            
             ## TRIGGER MSG
             label = "ROBO 00" + str(self.numOfConn)
             trigger = "Client " + label + " : Current time is " + time + "\n" + welcomeResp
